@@ -1,15 +1,14 @@
 package com.knowgravity.raster_game.graphics.sprite;
 
 import java.awt.image.BufferedImage;
-import java.io.FileNotFoundException;
-import java.util.Scanner;
 
 import com.knowgravity.raster_game.util.IOUtil;
 
 public class SpriteSheet {
 
-	public static SpriteSheet basic = new SpriteSheet("/res/spritesheets/basic_sheet");
-	public static SpriteSheet player = new SpriteSheet("/res/spritesheets/player_sheet");
+	public static final SpriteSheet BASIC = new SpriteSheet("/res/spritesheets/texture_sheets/");
+	public static final SpriteSheet PLAYER = new SpriteSheet("/res/spritesheets/player_sheets/");
+//	public static final SpriteSheet MOB_SHEET_1 = new SpriteSheet("/res/spritesheets/mob_sheets/", "mob_sheet_1.png");
 
 	private String path;
 	private BufferedImage image;
@@ -18,11 +17,17 @@ public class SpriteSheet {
 
 	public SpriteSheet(String path) {
 		this.path = path;
-		load();
+		load(null);
 	}
 
-	private void load() {
-		image = IOUtil.loadImageResource(path + "/sheet.png");
+	public SpriteSheet(String path, String name) {
+		this.path = path;
+		load(name);
+	}
+
+	private void load(String name) {
+		if (name == null) name = "sheet.png";
+		image = IOUtil.loadImageResource(path + name);
 		width = image.getWidth();
 		height = image.getHeight();
 		pixels = new int[width * height];

@@ -1,8 +1,9 @@
 package com.knowgravity.raster_game.level;
 
-import java.io.FileNotFoundException;
-import java.util.Scanner;
+import static com.knowgravity.raster_game.Main.getInput;
+import static java.awt.event.KeyEvent.*;
 
+import com.knowgravity.raster_game.Main;
 import com.knowgravity.raster_game.graphics.Screen;
 import com.knowgravity.raster_game.level.tile.Tile;
 import com.knowgravity.raster_game.level.tile.tiles.DirtTile;
@@ -14,9 +15,9 @@ public class Level {
 
 	public static Level TEST_LEVEL = new Level("/res/levels/test_level/");
 
-	private int width, height;
+	private int width = -1, height = -1;
 
-	private int tileSize;
+	private int tileSize, scale = 2;
 	private int bitShift;
 
 	private String path;
@@ -27,6 +28,8 @@ public class Level {
 	private int[] tileMap, entityMap;
 
 	private Tile[] tiles;
+
+	private double gravity = .0918;
 
 	public Level(String path) {
 		this.path = path;
@@ -40,14 +43,9 @@ public class Level {
 
 	public void load() {
 		// TODO loading structure
-		Scanner file = null;
-		try {
-			file = new Scanner(IOUtil.loadResource(path + "/.gen.dat"));
-		} catch (FileNotFoundException ex) {
-			ex.printStackTrace();
-		}
-		while (file.hasNextLine()) {
-			String command = file.nextLine();
+		String[] data = IOUtil.loadDatResource(path + ".gen.dat").split(";");
+		for (String command : data) {
+			command = command.replaceAll("\n", "").replaceAll("\r", "").replaceAll(";", "");
 			String beg = command.substring(0, command.indexOf(":"));
 			String content = command.replaceFirst(beg + ":", "");
 			switch (beg) {
@@ -57,36 +55,39 @@ public class Level {
 				// bgWidth = img.getWidth();
 				// bgHeight = img.getHeight();
 				// background = img.getRGB(0, 0, bgWidth, bgHeight, null, 0, bgWidth);
-				System.err.println("background loaded...");
+				System.out.println("background loaded...");
 				break;
 			case "width-height":
 				String[] wh = content.split(",");
 				width = Integer.parseInt(wh[0]);
 				height = Integer.parseInt(wh[1]);
-				System.err.println("width and height loaded...");
+				System.out.println("width and height loaded...");
 				break;
 			case "tile-size":
 				tileSize = Integer.parseInt(content);
 				bitShift = MathUtil.getBitShift(tileSize);
-				System.err.println("tile size loaded...");
+				System.out.println("tile size loaded...");
 				break;
 			case "tile-map":
 				tileMap = IOUtil.loadImageResource(path + content).getRGB(0, 0, width, height, null, 0, width);
-				System.err.println("tile map loaded...");
+				System.out.println("tile map loaded...");
 				break;
 			case "entity-map":
 				entityMap = IOUtil.loadImageResource(path + content).getRGB(0, 0, width, height, null, 0, width);
-				System.err.println("entity map loaded...");
+				System.out.println("entity map loaded...");
 				break;
 			case "spawn-tile":
 				String[] xy = content.split(",");
 				spawnTile = new Coordinate(Integer.parseInt(xy[0]), Integer.parseInt(xy[1]));
-				System.err.println("spawn tile loaded...");
+				System.out.println("spawn tile loaded...");
+				break;
+			case "gravity":
+				gravity = Double.parseDouble(content);
 			}
 		}
-		file.close();
 	}
 
+	// TODO better level generation
 	public void generate() {
 		tiles = new Tile[width * height];
 		for (int i = 0; i < tileMap.length; i++) {
@@ -95,6 +96,12 @@ public class Level {
 			if (tileMap[i] == 0xFFFFFFFF) tiles[i] = Tile.background;
 			if (tileMap[i] == 0xFF000000) tiles[i] = DirtTile.fetch();
 		}
+	}
+
+	public void update() {
+		if (getInput().getKey(VK_P).isReleased()) this.upsize();
+		if (getInput().getKey(VK_O).isReleased()) this.downsize();
+		if (getInput().getKey(VK_UP).isPressed()) gravity *= -1;
 	}
 
 	public void render(int xScroll, int yScroll, Screen screen) {
@@ -124,8 +131,11 @@ public class Level {
 
 	public Tile getTile(int x, int y) {
 		if (x < 0 || y < 0 || x >= width || y >= height) return Tile.outOfBounds;
-		// System.out.println(tiles[x + y * width]);
 		return tiles[x + y * width];
+	}
+
+	public double getGravity() {
+		return gravity;
 	}
 
 	public int getPixelWidth() {
@@ -151,4 +161,17 @@ public class Level {
 	public int getTileSize() {
 		return this.tileSize;
 	}
+
+	public int getScale() {
+		return scale;
+	}
+
+	public void downsize() {
+		if (scale > 1) Main.initGraphics(--scale);
+	}
+
+	public void upsize() {
+		if (scale < 5) Main.initGraphics(++scale);
+	}
+
 }

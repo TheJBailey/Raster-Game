@@ -14,4 +14,9 @@ public class MathUtil {
 		}
 		return i;
 	}
+
+	public static int absInc(double xa) {
+		if (xa > 0) return 1;
+		return -1;
+	}
 }

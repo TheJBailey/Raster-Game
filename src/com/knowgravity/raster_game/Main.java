@@ -6,13 +6,13 @@ import java.awt.Graphics;
 import java.awt.image.BufferStrategy;
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferInt;
-import java.util.Random;
 
 import javax.swing.JFrame;
 
 import com.knowgravity.raster_game.entity.mob.player.Player;
 import com.knowgravity.raster_game.graphics.Screen;
 import com.knowgravity.raster_game.level.Level;
+import com.knowgravity.raster_game.util.input.Input;
 import com.knowgravity.raster_game.util.maths.AspectRatio;
 
 public class Main extends Canvas implements Runnable {
@@ -23,36 +23,47 @@ public class Main extends Canvas implements Runnable {
 	private static final long serialVersionUID = 1L;
 
 	JFrame window;
-	static AspectRatio aspect = new AspectRatio(16, 9);
-	static int width = 500, height = aspect.getHeight(width), scale = 2;
-	static Dimension size = new Dimension(width * scale, height * scale);
 	static String title = "Raster Game";
+	static AspectRatio aspect = new AspectRatio(16, 9);
+	static int twidth = 1000, width, height;
+	static Dimension size;
 
-	static boolean DEV_HUD = true;
-
-	private BufferedImage image = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
-	private int[] pixels = ((DataBufferInt) image.getRaster().getDataBuffer()).getData();
+	private static BufferedImage image;
+	private static int[] pixels;
+	private static Screen screen;
 
 	private Thread thread;
 	private boolean running;
 	private static int frameLimit = -1, updateRate = 60;
 
-	private Screen screen;
+	static boolean DEV_HUD = true;
 
 	private Level level = Level.TEST_LEVEL;
 	private Player player;
 
+	private static Input input;
+
 	public Main() {
 		window = new JFrame(title);
-		this.setPreferredSize(size);
+		initGraphics(level.getScale());
 		initWindow();
 
 		screen = new Screen(width, height);
-		player = new Player((int) level.getSpawnTile().x, (int) level.getSpawnTile().y, Player.SPRITE, level);
+
+		input = new Input();
+		addMouseListener(input);
+		addMouseMotionListener(input);
+		addKeyListener(input);
+
+		player = new Player((int) level.getSpawnTile().x, (int) level.getSpawnTile().y, level);
 	}
 
-	public void update() {
+	boolean slowMo = false;
 
+	public void update() {
+		input.update();
+		level.update();
+		player.update();
 	}
 
 	public void render() {
@@ -64,8 +75,8 @@ public class Main extends Canvas implements Runnable {
 
 		Graphics g = bs.getDrawGraphics();
 
-		int xScroll = (int) player.getBounds().x - Screen.getWidth() / 2;
-		int yScroll = (int) player.getBounds().y - Screen.getHeight() / 2;
+		int xScroll = (int) player.getBounds().getCenter().x - Screen.getWidth() / 2;
+		int yScroll = (int) player.getBounds().getCenter().y - Screen.getHeight() / 2;
 		/* <-------render here-------> */
 		level.render(xScroll, yScroll, screen);
 		player.render(screen);
@@ -98,7 +109,7 @@ public class Main extends Canvas implements Runnable {
 		requestFocus();
 		while (running) {
 			long now = System.nanoTime();
-			deltaU += (now - lastTimeU) / nsU;
+			deltaU += (now - lastTimeU) / (1000000000.0 / updateRate);
 			lastTimeU = now;
 
 			if (deltaU >= 1) {
@@ -148,8 +159,19 @@ public class Main extends Canvas implements Runnable {
 		}
 	}
 
+	public static void initGraphics(int scale) {
+		height = aspect.getHeight((width = twidth / scale));
+
+		image = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
+		pixels = ((DataBufferInt) image.getRaster().getDataBuffer()).getData();
+
+		size = new Dimension(width * scale, height * scale);
+		screen = new Screen(width, height);
+	}
+
 	public void initWindow() {
 		window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		this.setPreferredSize(size);
 		window.add(this);
 		window.pack();
 		window.setLocationRelativeTo(null);
@@ -160,7 +182,7 @@ public class Main extends Canvas implements Runnable {
 		new Main().start();
 	}
 
-	public static void setDevHUD(boolean dev) {
+	public static void enableDevHUD(boolean dev) {
 		DEV_HUD = dev;
 	}
 
@@ -172,4 +194,7 @@ public class Main extends Canvas implements Runnable {
 		frameLimit = fl;
 	}
 
+	public static Input getInput() {
+		return input;
+	}
 }

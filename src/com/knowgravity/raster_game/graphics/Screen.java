@@ -39,17 +39,21 @@ public class Screen {
 		}
 	}
 
-	public void renderSprite(int xp, int yp, Sprite sprite, boolean fixed) {
+	public void renderSprite(int xp, int yp, Sprite sprite, boolean fixed, int flip) {
 		if (fixed) {
 			xp -= offset.x;
 			yp -= offset.y;
 		}
 		for (int y = 0; y < sprite.getHeight(); y++) {
 			int ya = y + yp;
+			int ys = y;
 			for (int x = 0; x < sprite.getWidth(); x++) {
 				int xa = x + xp;
+				int xs = x;
 				if (xa < 0 || xa >= width || ya < 0 || ya >= height) continue;
-				int tCol = sprite.getPixels()[x + y * sprite.getWidth()];
+				if (flip == 1 || flip == 3) xs = (sprite.getWidth() - 1) - x;
+				if (flip == 2 || flip == 3) ys = (sprite.getHeight() - 1) - y;
+				int tCol = sprite.getPixels()[xs + ys * sprite.getWidth()];
 				int bCol = pixels[xa + ya * Screen.width];
 				pixels[xa + ya * Screen.width] = ColorUtil.getAlphaComposite(tCol, bCol, ColorUtil.TYPE_OVER);
 			}

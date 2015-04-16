@@ -15,15 +15,13 @@ public abstract class Tile {
 
 	protected static ArrayList<Tile> tiles = new ArrayList<Tile>();
 
-	public static Tile outOfBounds = new VoidTile(new Sprite(1, 0, 32, SpriteSheet.basic));
-	
+	public static Tile outOfBounds = new VoidTile(new Sprite(1, 0, 32, SpriteSheet.BASIC));
 	public static Tile background = new MiscTile(new Sprite(32, 0x00000000), "BACKGROUND");
+	public static Tile grass = new GrassTile(new Sprite(0, 0, 32, SpriteSheet.BASIC));
+	public static Tile dirt1 = new DirtTile(new Sprite(1, 0, 32, SpriteSheet.BASIC));
+	public static Tile dirt2 = new DirtTile(new Sprite(2, 0, 32, SpriteSheet.BASIC));
+
 	public static Tile unknown = new MiscTile(new Sprite(32, 0xFFD940), "VOID");
-
-	public static Tile grass = new GrassTile(new Sprite(0, 0, 32, SpriteSheet.basic));
-	public static Tile dirt1 = new DirtTile(new Sprite(1, 0, 32, SpriteSheet.basic));
-	public static Tile dirt2 = new DirtTile(new Sprite(2, 0, 32, SpriteSheet.basic));
-
 
 	protected Sprite sprite;
 	protected String name = "TILE";
