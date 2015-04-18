@@ -22,11 +22,11 @@ public abstract class Mob extends Entity {
 	protected int state = WALKING;
 
 	protected Vector2f vector;
-	protected double speed, cSpeed;
+	protected double speed, rSpeed, cSpeed, jumpH;
 	protected SpriteSet spriteSet;
 
 	protected boolean jumping, jumping2, landed;
-	private double xz, yz, xFric = .3;
+	private double yz, xFric = .3, xAccel = .25;
 
 	public Mob(double x, double y, SpriteSet set, Level level) {
 		super(x, y, set.get(IDLE, 0), level);
@@ -42,33 +42,32 @@ public abstract class Mob extends Entity {
 	}
 
 	// TODO fix flipped gravity
-	// LOW mob move method is a bit messy
-	public void move(double xa, double ya) {
+	// LOW tidy up move cycling
+	public void move() {
+		double xa = 0, ya = 0;
+
+		xa += doSpeed();
+		applyFriction();
+		System.out.println(jumping);
+
 		/* ---------------- x-axis ---------------- */
 		while (xa != 0) {
-			int collision = collisionDir = collision(MathUtil.absInc(xa), 0);
-			if (xa < 0) xDir = Entity.DIR_LEFT;
-			if (xa >= 0) xDir = Entity.DIR_RIGHT;
+			collision = collision(MathUtil.absInc(xa), 0);
 			if (Math.abs(xa) > 1) {
-				if (collision == Entity.COLLISION_NONE) {
-					bounds.x += MathUtil.absInc(xa);
-				} else xz = 0;
+				if (collision == Entity.COLLISION_NONE) bounds.x += MathUtil.absInc(xa);
 				xa -= MathUtil.absInc(xa);
 			} else {
-				if (collision == Entity.COLLISION_NONE) {
-					bounds.x += xa;
-				} else xz = 0;
+				if (collision == Entity.COLLISION_NONE) bounds.x += xa;
 				xa = 0;
 			}
 		}
 
 		/* ---------------- y-axis | also contains gravity and jumping(partial) ---------------- */
+
 		yz -= level.getGravity();
 		ya -= yz;
-		// if (Main.getInput().getKey(KeyEvent.VK_O).isActive()) ya -= 1;
-		// if (Main.getInput().getKey(KeyEvent.VK_L).isActive()) ya += 1;
 		while (ya != 0) {
-			int collision = collisionDir = collision(0, MathUtil.absInc(ya));
+			collision = collision(0, MathUtil.absInc(ya));
 			if (ya < 0) yDir = Entity.DIR_UP;
 			if (ya >= 0) yDir = Entity.DIR_DOWN;
 			if (Math.abs(ya) > 1) {
@@ -76,19 +75,18 @@ public abstract class Mob extends Entity {
 					bounds.y += MathUtil.absInc(ya);
 					landed = false;
 				} else {
-					if ((collisionDir == Entity.COLLISION_TOP_LEFT || collisionDir == Entity.COLLISION_TOP_RIGHT)
+					if ((collision == Entity.COLLISION_TOP_LEFT || collision == Entity.COLLISION_TOP_RIGHT)
 							&& yDir == Entity.DIR_DOWN) landed = true;
 					else landed = false;
 					yz = 0;
 				}
 				ya -= MathUtil.absInc(ya);
 			} else {
-
 				if (collision == Entity.COLLISION_NONE) {
 					bounds.y += ya;
 					landed = false;
 				} else {
-					if ((collisionDir == Entity.COLLISION_TOP_LEFT || collisionDir == Entity.COLLISION_TOP_RIGHT)
+					if ((collision == Entity.COLLISION_TOP_LEFT || collision == Entity.COLLISION_TOP_RIGHT)
 							&& yDir == Entity.DIR_DOWN) landed = true;
 					else landed = false;
 					yz = 0;
@@ -96,13 +94,51 @@ public abstract class Mob extends Entity {
 				ya = 0;
 			}
 		}
-		// TODO figure out correct logic behind jumping
-		if (jumping || jumping2) {
-			state = JUMPING;
-			if (cSpeed > speed) state = LONG_JUMPING;
-			if (landed) jumping = jumping2 = false;
+
+		jumpdate();
+		flip = getFlip();
+	}
+
+	public double doSpeed() {
+		double tSpeed = 0;
+		if (state == WALKING || state == RUNNING) {
+			if (state == WALKING) tSpeed = speed;
+			if (state == RUNNING) tSpeed = rSpeed;
+			if (cSpeed != tSpeed) {
+				if (cSpeed < tSpeed) {
+					if (cSpeed + xAccel < tSpeed) cSpeed += xAccel;
+					else cSpeed = tSpeed;
+				} else {
+					if (cSpeed - xAccel > tSpeed) cSpeed -= xAccel;
+					else cSpeed = tSpeed;
+				}
+			}
 		}
-		if (yDir == Entity.DIR_DOWN && collisionDir == COLLISION_NONE) state = FALLING;
+
+		if (xDir == DIR_LEFT) return -cSpeed;
+		if (xDir == DIR_RIGHT) return cSpeed;
+		return 0;
+	}
+
+	public void applyFriction() {
+		if (state == IDLE) {
+			cSpeed -= xFric;
+			if (cSpeed < xFric) cSpeed = 0;
+		}
+	}
+
+	public int getFlip() {
+		if (xDir == DIR_LEFT && level.getGravity() > 0) return FLIP_X;
+		if (xDir != DIR_LEFT && level.getGravity() < 0) return FLIP_Y;
+		if (xDir == DIR_LEFT && level.getGravity() < 0) return FLIP_BOTH;
+		return FLIP_NONE;
+	}
+
+	public void jumpdate() {
+		if (yDir == Entity.DIR_DOWN && collision == COLLISION_NONE) state = FALLING;
+		if (jumping || jumping2) state = JUMPING;
+		if (state == JUMPING && cSpeed > speed) state = LONG_JUMPING;
+		if (landed) jumping = jumping2 = false;
 	}
 
 	protected void jump(double jump_accel) {
@@ -110,12 +146,8 @@ public abstract class Mob extends Entity {
 		if (jumping) jumping2 = true;
 		else if (landed) jumping = true;
 		else return;
-		if (flip == 2 || flip == 3) yz = -jump_accel;
+		if (flip == FLIP_BOTH || flip == FLIP_Y) yz = -jump_accel;
 		else yz = jump_accel;
-		// if ((collisionDir == Entity.COLLISION_BOTTOM_LEFT || collisionDir == Entity.COLLISION_TOP_LEFT)
-		// && xDir == Entity.DIR_LEFT) xz = jump_accel / 2;
-		// if ((collisionDir == Entity.COLLISION_BOTTOM_RIGHT || collisionDir == Entity.COLLISION_TOP_RIGHT)
-		// && xDir == Entity.DIR_RIGHT) xz = -jump_accel / 2;
 	}
 
 }

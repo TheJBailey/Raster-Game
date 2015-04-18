@@ -32,7 +32,7 @@ public abstract class Entity {
 	protected int flip;
 
 	protected int xDir, yDir;
-	protected int collisionDir;
+	protected int collision;
 
 	protected boolean removed = false;
 
@@ -62,8 +62,8 @@ public abstract class Entity {
 				xc = ((bounds.x + xa) + c % 2 * 17 + 6) / level.getTileSize();
 				yc = ((bounds.y + ya) + c / 2 * 25 + 0) / level.getTileSize();
 			} else {
-				xc = ((bounds.x + xa) + c % 2 * 17 + 6) / level.getTileSize();
-				yc = ((bounds.y + ya) + c / 2 * 25 + 6) / level.getTileSize();
+				xc = ((bounds.x + xa) + c % 2 * 19 + 6) / level.getTileSize();
+				yc = ((bounds.y + ya) + c / 2 * 27 + 4) / level.getTileSize();
 			}
 			Tile tile = level.getTile((int) xc, (int) yc);
 			if (tile.isSolid()) return c;

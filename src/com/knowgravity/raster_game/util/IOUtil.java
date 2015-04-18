@@ -40,13 +40,6 @@ public class IOUtil {
 		Scanner file;
 		int sw = 32, sh = 32;
 		String data = IOUtil.loadDatResource(path + "/load.dat");
-		/*
-		 * try { while (file.hasNextLine()) { String line = file.nextLine(); if (line.startsWith("$")) { line =
-		 * line.replace("$", ""); String[] wh = line.split(","); sw = Integer.parseInt(wh[0]); sh =
-		 * Integer.parseInt(wh[1]); } if (line.startsWith("::")) { line = line.replace("::", "");
-		 * 
-		 * } } } catch (FileNotFoundException e) {}
-		 */
 		return null;
 	}
 

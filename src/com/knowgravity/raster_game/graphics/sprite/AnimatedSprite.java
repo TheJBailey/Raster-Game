@@ -84,4 +84,5 @@ public class AnimatedSprite {
 		loop = false;
 		return this;
 	}
+
 }

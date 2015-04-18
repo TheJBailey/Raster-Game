@@ -29,7 +29,7 @@ public class Level {
 
 	private Tile[] tiles;
 
-	private double gravity = .0918;
+	private double gravity = .2918;
 
 	public Level(String path) {
 		this.path = path;
