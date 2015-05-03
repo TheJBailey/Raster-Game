@@ -1,5 +1,7 @@
 package com.knowgravity.raster_game.util.maths;
 
+import com.knowgravity.raster_game.Game;
+
 public class Coordinate {
 
 	public double x, y;
@@ -39,6 +41,18 @@ public class Coordinate {
 		public boolean contains(Coordinate coor) {
 			if (coor.x < x || coor.x > x + width || coor.y < y || coor.y > y + height) return false;
 			return true;
+		}
+
+		public boolean containsMouse() {
+			int scale = Game.getScale();
+			Coordinate coor = Game.getInput().getMousePosition();
+			Bounds b = new Bounds(x * scale, y * scale, width * scale, height * scale);
+			if (coor.x < b.x || coor.x > b.x + b.width || coor.y < b.y || coor.y > b.y + b.height) return false;
+			return true;
+		}
+
+		public String toString() {
+			return super.toString() + " | width::" + width + " | h::" + height;
 		}
 	}
 }

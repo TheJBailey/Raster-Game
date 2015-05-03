@@ -97,7 +97,7 @@ public class Input implements KeyListener, MouseListener, MouseMotionListener {
 	}
 
 	public Coordinate getMousePosition() {
-		return mouse;
+		return new Coordinate(mouse.x, mouse.y);
 	}
 
 	@Override

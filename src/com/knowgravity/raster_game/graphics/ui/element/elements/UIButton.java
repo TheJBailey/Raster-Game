@@ -26,7 +26,7 @@ public class UIButton extends UIElement {
 	@Override
 	protected void pollState() {
 		pState = state;
-		if (bounds.contains(getInput().getMousePosition())) {
+		if (bounds.containsMouse()) {
 			state = State.hover;
 			if (getInput().getMouseButton() == Input.LMB) state = State.active;
 		} else state = State.still;
@@ -37,7 +37,7 @@ public class UIButton extends UIElement {
 		pollState();
 		pressed = released = false;
 		if (state == State.active && pState != State.active) pressed = true;
-		if (state != State.active && pState == State.active&& bounds.contains(getInput().getMousePosition())) released = true;
+		if (state != State.active && pState == State.active && bounds.containsMouse()) released = true;
 	}
 
 	public boolean ispressed() {

@@ -4,7 +4,8 @@ import java.awt.Canvas;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
-import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.RenderingHints;
 import java.awt.image.BufferStrategy;
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferInt;
@@ -19,6 +20,7 @@ import com.knowgravity.raster_game.graphics.ui.states.StartMenu;
 import com.knowgravity.raster_game.level.Level;
 import com.knowgravity.raster_game.util.input.Input;
 import com.knowgravity.raster_game.util.maths.AspectRatio;
+import com.knowgravity.raster_game.util.maths.Coordinate;
 
 public class Game extends Canvas implements Runnable {
 
@@ -30,7 +32,7 @@ public class Game extends Canvas implements Runnable {
 	JFrame window;
 	static String title = "Raster Game";
 	static AspectRatio aspect = new AspectRatio(16, 9);
-	static int total_width = 1000, width, height;
+	static int total_width = 1000, width, height, scale = -1;
 	static Dimension size;
 
 	static Font DEFAULT_FONT = new Font("HELVETICA", Font.PLAIN, 32);
@@ -85,6 +87,18 @@ public class Game extends Canvas implements Runnable {
 		if (player != null) player.update();
 	}
 
+	void setRenderingHints(Graphics2D g) {
+		g.setRenderingHint(RenderingHints.KEY_ALPHA_INTERPOLATION, RenderingHints.VALUE_ALPHA_INTERPOLATION_QUALITY);
+		g.setRenderingHint(RenderingHints.KEY_FRACTIONALMETRICS, RenderingHints.VALUE_FRACTIONALMETRICS_ON);
+		g.setRenderingHint(RenderingHints.KEY_FRACTIONALMETRICS, RenderingHints.VALUE_FRACTIONALMETRICS_ON);
+		g.setRenderingHint(RenderingHints.KEY_COLOR_RENDERING, RenderingHints.VALUE_COLOR_RENDER_QUALITY);
+		g.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
+		g.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BICUBIC);
+		g.setRenderingHint(RenderingHints.KEY_STROKE_CONTROL, RenderingHints.VALUE_STROKE_NORMALIZE);
+		g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+		g.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
+	}
+
 	public void render() {
 		BufferStrategy bs = this.getBufferStrategy();
 		if (bs == null) {
@@ -92,7 +106,8 @@ public class Game extends Canvas implements Runnable {
 			return;
 		}
 
-		Graphics g = bs.getDrawGraphics();
+		Graphics2D g = (Graphics2D) bs.getDrawGraphics();
+		setRenderingHints(g);
 
 		int xScroll = 0, yScroll = 0;
 		if (player != null) {
@@ -112,8 +127,11 @@ public class Game extends Canvas implements Runnable {
 		g.drawImage(image, 0, 0, size.width, size.height, null);
 
 		/* <-------graphics-render here-------> */
-
 		g.setColor(Color.white);
+		g.setFont(DEFAULT_FONT.deriveFont(24f));
+		Coordinate m = new Coordinate(input.getMousePosition().x, input.getMousePosition().y);
+		g.drawString("x::" + m.x + " | y::" + m.y, size.width - 200, 24);
+		g.drawOval((int) m.x - 5, (int) m.y - 5, 10, 10);
 
 		screen.clear();
 		g.dispose();
@@ -187,6 +205,7 @@ public class Game extends Canvas implements Runnable {
 	}
 
 	public static void initGraphics(int scale) {
+		Game.scale = scale;
 		height = aspect.getHeight((width = total_width / scale));
 
 		image = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
@@ -225,8 +244,13 @@ public class Game extends Canvas implements Runnable {
 		return input;
 	}
 
-	public Level getLevel() {
+	public static Level getLevel() {
 		return level;
+	}
+
+	public static int getScale() {
+		if (level == null) return scale;
+		return level.getScale();
 	}
 
 	public void setLevel(Level level) {
