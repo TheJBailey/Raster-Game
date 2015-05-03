@@ -8,7 +8,11 @@ public class SpriteSheet {
 
 	public static final SpriteSheet BASIC = new SpriteSheet("/res/spritesheets/texture_sheets/");
 	public static final SpriteSheet PLAYER = new SpriteSheet("/res/spritesheets/player_sheets/");
-//	public static final SpriteSheet MOB_SHEET_1 = new SpriteSheet("/res/spritesheets/mob_sheets/", "mob_sheet_1.png");
+	public static final SpriteSheet START_MENU = new SpriteSheet("/res/spritesheets/menu_sheets/start/");
+	public static final SpriteSheet LOADING_MENU = new SpriteSheet("/res/spritesheets/menu_sheets/loading/");
+
+	// public static final SpriteSheet MOB_SHEET_1 = new SpriteSheet("/res/spritesheets/mob_sheets/",
+	// "mob_sheet_1.png");
 
 	private String path;
 	private BufferedImage image;

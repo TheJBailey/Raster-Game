@@ -35,5 +35,10 @@ public class Coordinate {
 		public Coordinate getCenter() {
 			return new Coordinate(x + width / 2, y + height / 2);
 		}
+
+		public boolean contains(Coordinate coor) {
+			if (coor.x < x || coor.x > x + width || coor.y < y || coor.y > y + height) return false;
+			return true;
+		}
 	}
 }

@@ -2,6 +2,11 @@ package com.knowgravity.raster_game.graphics.sprite;
 
 public class Sprite {
 
+	public static int FLIP_NONE = 0;
+	public static int FLIP_X = 1;
+	public static int FLIP_Y = 2;
+	public static int FLIP_BOTH = 3;
+
 	private int[] pixels;
 	private int width, height;
 	private SpriteSheet sheet;

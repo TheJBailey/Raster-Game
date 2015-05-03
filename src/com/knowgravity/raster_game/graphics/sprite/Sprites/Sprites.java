@@ -1,6 +1,7 @@
 package com.knowgravity.raster_game.graphics.sprite.Sprites;
 
 import com.knowgravity.raster_game.graphics.sprite.AnimatedSprite;
+import com.knowgravity.raster_game.graphics.sprite.Sprite;
 import com.knowgravity.raster_game.graphics.sprite.SpriteSet;
 import com.knowgravity.raster_game.graphics.sprite.SpriteSheet;
 import com.knowgravity.raster_game.util.maths.Coordinate;
@@ -25,6 +26,23 @@ public class Sprites {
 						new Coordinate[] { new Coordinate(3, 2), new Coordinate(4, 2) }).disableLoop(),
 				new AnimatedSprite(0, SpriteSheet.PLAYER, 32, new Coordinate[] { new Coordinate(2, 4) }).disableLoop() });
 
+	}
+
+	public static class Menus {
+
+		public static class Loading {
+			public static Sprite content = new Sprite(0, 0, 96, 32, SpriteSheet.LOADING_MENU);
+		}
+
+		public static class Start {
+			public static class Buttons {
+				public static class Play {
+					public static Sprite still = new Sprite(0, 0, 96, 32, SpriteSheet.START_MENU);
+					public static Sprite hover = new Sprite(0, 1, 96, 32, SpriteSheet.START_MENU);
+					public static Sprite active = new Sprite(0, 2, 96, 32, SpriteSheet.START_MENU);
+				}
+			}
+		}
 	}
 
 }

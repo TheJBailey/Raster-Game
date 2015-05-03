@@ -8,11 +8,6 @@ import com.knowgravity.raster_game.util.maths.Coordinate.Bounds;
 
 public abstract class Entity {
 
-	public static int FLIP_NONE = 0;
-	public static int FLIP_X = 1;
-	public static int FLIP_Y = 2;
-	public static int FLIP_BOTH = 3;
-
 	public static int DIR_UP = 1;
 	public static int DIR_LEFT = 2;
 	public static int DIR_DOWN = 3;

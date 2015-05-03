@@ -79,7 +79,9 @@ public class Screen {
 			for (int x = 0; x < rasterWidth; x++) {
 				int xa = x + xp;
 				if (xa < 0 || xa >= width || ya < 0 || ya >= height) continue;
-				pixels[xa + ya * width] = raster[x + y * rasterWidth];
+				int tCol = raster[xa + ya * rasterWidth];
+				int bCol = pixels[xa + ya * Screen.width];
+				pixels[xa + ya * Screen.width] = ColorUtil.getAlphaComposite(tCol, bCol, ColorUtil.TYPE_OVER);
 			}
 		}
 	}

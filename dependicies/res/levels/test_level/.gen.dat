@@ -1,6 +1,4 @@
-background-file:bg.png;
 tile-size:32;
-width-height:34,30;
+width-height:10,10;
 tile-map:tilemap.png;
-entity-map:entitymap.png;
-spawn-tile:5,28;
+spawn-tile:3,8;

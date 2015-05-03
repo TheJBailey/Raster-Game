@@ -1,15 +1,11 @@
 package com.knowgravity.raster_game.entity.mob.player;
 
-import static com.knowgravity.raster_game.Main.getInput;
-import static java.awt.event.KeyEvent.*;
+import static com.knowgravity.raster_game.Game.getInput;
 
 import com.knowgravity.raster_game.entity.mob.Mob;
-import com.knowgravity.raster_game.graphics.sprite.AnimatedSprite;
-import com.knowgravity.raster_game.graphics.sprite.SpriteSet;
-import com.knowgravity.raster_game.graphics.sprite.SpriteSheet;
 import com.knowgravity.raster_game.graphics.sprite.Sprites.Sprites;
 import com.knowgravity.raster_game.level.Level;
-import com.knowgravity.raster_game.util.maths.Coordinate;
+import com.knowgravity.raster_game.util.input.Input;
 
 public class Player extends Mob {
 
@@ -24,24 +20,25 @@ public class Player extends Mob {
 		jumpH = 5.25;
 	}
 
-	// @Override
-	// public void move(int xa, int ya) {}
-
 	@Override
 	public void update() {
+
+		/* ------------------------ keys ----------------------------- */
+		boolean left = getInput().getKey(Input.KEY_LEFT).isActive();
+		boolean right = getInput().getKey(Input.KEY_RIGHT).isActive();
+		boolean sprint = getInput().getKey(Input.KEY_SPRINT).isActive();
+
+		boolean jump = getInput().getKey(Input.KEY_JUMP).isPressed();
+
 		/* -------------- input ---------------- */
-		boolean key_a = getInput().getKey(VK_A).isActive(), key_d = getInput().getKey(VK_D).isActive();
-		if (key_a || key_d) {
-			if (getInput().getKey(VK_SHIFT).isActive()) state = RUNNING;
+		if (left || right) {
+			if (sprint) state = RUNNING;
 			else state = WALKING;
-			if (key_a) xDir = DIR_LEFT;
-			if (key_d) xDir = DIR_RIGHT;
+			if (left) xDir = DIR_LEFT;
+			if (right) xDir = DIR_RIGHT;
 		} else state = IDLE;
 
-		if (getInput().getKey(VK_SPACE).isPressed()) jump(jumpH);
-		/* -------------- input ---------------- */
-
-		// System.out.println(xa + " :: " + level.getGravity());
+		if (jump) jump(jumpH);
 
 		move();
 		sprite = spriteSet.update(state);

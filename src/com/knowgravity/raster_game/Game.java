@@ -1,7 +1,9 @@
 package com.knowgravity.raster_game;
 
 import java.awt.Canvas;
+import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.image.BufferStrategy;
 import java.awt.image.BufferedImage;
@@ -11,11 +13,14 @@ import javax.swing.JFrame;
 
 import com.knowgravity.raster_game.entity.mob.player.Player;
 import com.knowgravity.raster_game.graphics.Screen;
+import com.knowgravity.raster_game.graphics.ui.UIManager;
+import com.knowgravity.raster_game.graphics.ui.states.LoadingMenu;
+import com.knowgravity.raster_game.graphics.ui.states.StartMenu;
 import com.knowgravity.raster_game.level.Level;
 import com.knowgravity.raster_game.util.input.Input;
 import com.knowgravity.raster_game.util.maths.AspectRatio;
 
-public class Main extends Canvas implements Runnable {
+public class Game extends Canvas implements Runnable {
 
 	/**
 	 * 
@@ -25,8 +30,10 @@ public class Main extends Canvas implements Runnable {
 	JFrame window;
 	static String title = "Raster Game";
 	static AspectRatio aspect = new AspectRatio(16, 9);
-	static int twidth = 1000, width, height;
+	static int total_width = 1000, width, height;
 	static Dimension size;
+
+	static Font DEFAULT_FONT = new Font("HELVETICA", Font.PLAIN, 32);
 
 	private static BufferedImage image;
 	private static int[] pixels;
@@ -38,14 +45,17 @@ public class Main extends Canvas implements Runnable {
 
 	static boolean DEV_HUD = true;
 
-	private Level level = Level.TEST_LEVEL;
-	private Player player;
+	private static Level level;
+	private static Player player;
 
 	private static Input input;
 
-	public Main() {
+	private static Loader loader;
+	private static UIManager uiManager;
+
+	public Game() {
 		window = new JFrame(title);
-		initGraphics(level.getScale());
+		initGraphics(1);
 		initWindow();
 
 		screen = new Screen(width, height);
@@ -55,15 +65,24 @@ public class Main extends Canvas implements Runnable {
 		addMouseMotionListener(input);
 		addKeyListener(input);
 
-		player = new Player((int) level.getSpawnTile().x, (int) level.getSpawnTile().y, level);
+		uiManager = new UIManager(new StartMenu());
+		loader = new Loader(this);
+		load();
 	}
 
-	boolean slowMo = false;
+	public static void load() {
+		Game.getUIManager().removeUIState();
+		uiManager.addUIState(new LoadingMenu());
+		Thread thread = new Thread(loader, "loading");
+		thread.start();
+	}
 
 	public void update() {
 		input.update();
-		level.update();
-		player.update();
+		uiManager.update();
+		if (loader != null) loader.update();
+		if (level != null) level.update();
+		if (player != null) player.update();
 	}
 
 	public void render() {
@@ -75,17 +94,26 @@ public class Main extends Canvas implements Runnable {
 
 		Graphics g = bs.getDrawGraphics();
 
-		int xScroll = (int) player.getBounds().getCenter().x - Screen.getWidth() / 2;
-		int yScroll = (int) player.getBounds().getCenter().y - Screen.getHeight() / 2;
-		/* <-------render here-------> */
-		level.render(xScroll, yScroll, screen);
-		player.render(screen);
-		/* <-------render here-------> */
+		int xScroll = 0, yScroll = 0;
+		if (player != null) {
+			xScroll = (int) player.getBounds().getCenter().x - Screen.getWidth() / 2;
+			yScroll = (int) player.getBounds().getCenter().y - Screen.getHeight() / 2;
+		}
+
+		/* <-------raster-render here-------> */
+		uiManager.render(screen);
+
+		if (level != null) level.render(xScroll, yScroll, screen);
+		if (player != null) player.render(screen);
 
 		for (int i = 0; i < Screen.getPixels().length; i++)
 			pixels[i] = Screen.getPixels()[i];
 
 		g.drawImage(image, 0, 0, size.width, size.height, null);
+
+		/* <-------graphics-render here-------> */
+
+		g.setColor(Color.white);
 
 		screen.clear();
 		g.dispose();
@@ -100,7 +128,6 @@ public class Main extends Canvas implements Runnable {
 
 		/* updateRate */
 		long lastTimeU = System.nanoTime();
-		final double nsU = 1000000000.0 / updateRate;
 		double deltaU = 0;
 
 		int frames = 0, updates = 0;
@@ -160,13 +187,13 @@ public class Main extends Canvas implements Runnable {
 	}
 
 	public static void initGraphics(int scale) {
-		height = aspect.getHeight((width = twidth / scale));
+		height = aspect.getHeight((width = total_width / scale));
 
 		image = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
 		pixels = ((DataBufferInt) image.getRaster().getDataBuffer()).getData();
+		screen = new Screen(width, height);
 
 		size = new Dimension(width * scale, height * scale);
-		screen = new Screen(width, height);
 	}
 
 	public void initWindow() {
@@ -179,7 +206,7 @@ public class Main extends Canvas implements Runnable {
 	}
 
 	public static void main(String[] args) {
-		new Main().start();
+		new Game().start();
 	}
 
 	public static void enableDevHUD(boolean dev) {
@@ -196,5 +223,25 @@ public class Main extends Canvas implements Runnable {
 
 	public static Input getInput() {
 		return input;
+	}
+
+	public Level getLevel() {
+		return level;
+	}
+
+	public void setLevel(Level level) {
+		Game.level = level;
+	}
+
+	public Player getPlayer() {
+		return player;
+	}
+
+	public void setPlayer(Player player) {
+		Game.player = player;
+	}
+
+	public static UIManager getUIManager() {
+		return uiManager;
 	}
 }

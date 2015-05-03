@@ -1,9 +1,10 @@
 package com.knowgravity.raster_game.level;
 
-import static com.knowgravity.raster_game.Main.getInput;
-import static java.awt.event.KeyEvent.*;
+import static com.knowgravity.raster_game.Game.getInput;
+import static java.awt.event.KeyEvent.VK_O;
+import static java.awt.event.KeyEvent.VK_P;
 
-import com.knowgravity.raster_game.Main;
+import com.knowgravity.raster_game.Game;
 import com.knowgravity.raster_game.graphics.Screen;
 import com.knowgravity.raster_game.level.tile.Tile;
 import com.knowgravity.raster_game.level.tile.tiles.DirtTile;
@@ -101,7 +102,7 @@ public class Level {
 	public void update() {
 		if (getInput().getKey(VK_P).isReleased()) this.upsize();
 		if (getInput().getKey(VK_O).isReleased()) this.downsize();
-		if (getInput().getKey(VK_UP).isPressed()) gravity *= -1;
+//		if (getInput().getKey(VK_UP).isPressed()) gravity *= -1;
 	}
 
 	public void render(int xScroll, int yScroll, Screen screen) {
@@ -167,11 +168,11 @@ public class Level {
 	}
 
 	public void downsize() {
-		if (scale > 1) Main.initGraphics(--scale);
+		if (scale > 1) Game.initGraphics(--scale);
 	}
 
 	public void upsize() {
-		if (scale < 5) Main.initGraphics(++scale);
+		if (scale < 5) Game.initGraphics(++scale);
 	}
 
 }

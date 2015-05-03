@@ -7,6 +7,8 @@ import com.knowgravity.raster_game.level.Level;
 import com.knowgravity.raster_game.util.maths.MathUtil;
 import com.knowgravity.raster_game.util.maths.Vector2f;
 
+import static com.knowgravity.raster_game.graphics.sprite.Sprite.*;
+
 public abstract class Mob extends Entity {
 
 	public static final int IDLE = 0;
@@ -41,14 +43,13 @@ public abstract class Mob extends Entity {
 		super(x, y, sprite, level);
 	}
 
-	// TODO fix flipped gravity
+	// LOW fix flipped gravity
 	// LOW tidy up move cycling
 	public void move() {
 		double xa = 0, ya = 0;
 
 		xa += doSpeed();
 		applyFriction();
-		System.out.println(jumping);
 
 		/* ---------------- x-axis ---------------- */
 		while (xa != 0) {
@@ -141,7 +142,7 @@ public abstract class Mob extends Entity {
 		if (landed) jumping = jumping2 = false;
 	}
 
-	protected void jump(double jump_accel) {
+	public void jump(double jump_accel) {
 		if (jumping2) return;
 		if (jumping) jumping2 = true;
 		else if (landed) jumping = true;
