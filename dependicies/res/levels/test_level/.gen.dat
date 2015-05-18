@@ -1,4 +1,4 @@
 tile-size:32;
-width-height:10,10;
+width-height:42,30;
 tile-map:tilemap.png;
-spawn-tile:3,8;
+spawn-tile:20,25;
