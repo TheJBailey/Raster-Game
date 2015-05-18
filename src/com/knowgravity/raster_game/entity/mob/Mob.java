@@ -20,6 +20,7 @@ public abstract class Mob extends Entity {
 	public static final int FALLING = 6;
 	public static final int ATTACK = 7;
 	public static final int DASH_ATTACK = 8;
+	public static final int SLIDING = 9;
 
 	protected int state = WALKING;
 
@@ -122,7 +123,7 @@ public abstract class Mob extends Entity {
 	}
 
 	public void applyFriction() {
-		if (state == IDLE) {
+		if (state == SLIDING) {
 			cSpeed -= xFric;
 			if (cSpeed < xFric) cSpeed = 0;
 		}

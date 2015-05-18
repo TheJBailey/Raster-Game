@@ -9,10 +9,6 @@ import com.knowgravity.raster_game.util.input.Input;
 
 public class Player extends Mob {
 
-	// public static final Sprite SPRITE_1 = new Sprite(0, 0, 32, SpriteSheet.PLAYER);
-	// public static final Sprite SPRITE_2 = new Sprite(1, 0, 32, SpriteSheet.PLAYER);
-	// public static final Sprite SPRITE_3 = new Sprite(2, 0, 32, SpriteSheet.PLAYER);
-
 	public Player(double x, double y, Level level) {
 		super(x * level.getTileSize(), y * level.getTileSize(), Sprites.Player.LINK_SPRITESET, level);
 		speed = 2.2;
@@ -22,7 +18,6 @@ public class Player extends Mob {
 
 	@Override
 	public void update() {
-
 		/* ------------------------ keys ----------------------------- */
 		boolean left = getInput().getKey(Input.KEY_LEFT).isActive();
 		boolean right = getInput().getKey(Input.KEY_RIGHT).isActive();
@@ -36,7 +31,8 @@ public class Player extends Mob {
 			else state = WALKING;
 			if (left) xDir = DIR_LEFT;
 			if (right) xDir = DIR_RIGHT;
-		} else state = IDLE;
+		} else if (cSpeed != 0) state = SLIDING;
+		else state = IDLE;
 
 		if (jump) jump(jumpH);
 

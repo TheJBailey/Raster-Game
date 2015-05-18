@@ -2,7 +2,7 @@ package com.knowgravity.raster_game.util;
 
 public class ColorUtil {
 
-	public static int TYPE_OVER = 1;
+	public static int COMPOSITE_TYPE_OVER = 1;
 
 	public static int getAlphaComposite(int tc, int bc, int compositeType) {
 		float alpha = (float) getAlpha(tc) / (float) 255;

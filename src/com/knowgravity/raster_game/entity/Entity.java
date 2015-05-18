@@ -23,7 +23,8 @@ public abstract class Entity {
 
 	protected Sprite sprite;
 
-	protected Bounds bounds;
+	// TODO implement hitbox
+	protected Bounds bounds, hitbox;
 	protected int flip;
 
 	protected int xDir, yDir;

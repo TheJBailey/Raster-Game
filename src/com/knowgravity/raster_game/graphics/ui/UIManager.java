@@ -3,6 +3,7 @@ package com.knowgravity.raster_game.graphics.ui;
 import java.util.ArrayList;
 
 import com.knowgravity.raster_game.graphics.Screen;
+import com.knowgravity.raster_game.graphics.ui.state.UIState;
 
 public class UIManager {
 

@@ -20,11 +20,11 @@ public class Loader implements Runnable {
 		game.setLevel(Level.TEST_LEVEL);
 
 		content = "loading player";
-		Coordinate spawnTile = game.getLevel().getSpawnTile();
-		game.setPlayer(new Player((int) spawnTile.x, (int) spawnTile.y, game.getLevel()));
+		Coordinate spawnTile = Game.getLevel().getSpawnTile();
+		game.setPlayer(new Player((int) spawnTile.x, (int) spawnTile.y, Game.getLevel()));
 
 		content = "re-initializing graphics";
-		Game.initGraphics(game.getLevel().getScale());
+		Game.initGraphics(Game.getLevel().getScale());
 
 		content = "done!";
 		Game.getUIManager().removeUIState();

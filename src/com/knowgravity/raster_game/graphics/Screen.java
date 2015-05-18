@@ -34,7 +34,7 @@ public class Screen {
 				int xa = x + xp;
 				int tCol = color;
 				int bCol = pixels[xa + ya * Screen.width];
-				pixels[xa + ya * Screen.width] = ColorUtil.getAlphaComposite(tCol, bCol, ColorUtil.TYPE_OVER);
+				pixels[xa + ya * Screen.width] = ColorUtil.getAlphaComposite(tCol, bCol, ColorUtil.COMPOSITE_TYPE_OVER);
 			}
 		}
 	}
@@ -55,7 +55,7 @@ public class Screen {
 				if (flip == 2 || flip == 3) ys = (sprite.getHeight() - 1) - y;
 				int tCol = sprite.getPixels()[xs + ys * sprite.getWidth()];
 				int bCol = pixels[xa + ya * Screen.width];
-				pixels[xa + ya * Screen.width] = ColorUtil.getAlphaComposite(tCol, bCol, ColorUtil.TYPE_OVER);
+				pixels[xa + ya * Screen.width] = ColorUtil.getAlphaComposite(tCol, bCol, ColorUtil.COMPOSITE_TYPE_OVER);
 			}
 		}
 	}
@@ -81,7 +81,7 @@ public class Screen {
 				if (xa < 0 || xa >= width || ya < 0 || ya >= height) continue;
 				int tCol = raster[xa + ya * rasterWidth];
 				int bCol = pixels[xa + ya * Screen.width];
-				pixels[xa + ya * Screen.width] = ColorUtil.getAlphaComposite(tCol, bCol, ColorUtil.TYPE_OVER);
+				pixels[xa + ya * Screen.width] = ColorUtil.getAlphaComposite(tCol, bCol, ColorUtil.COMPOSITE_TYPE_OVER);
 			}
 		}
 	}

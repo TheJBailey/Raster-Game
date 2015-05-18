@@ -1,17 +1,20 @@
-package com.knowgravity.raster_game.graphics.ui.states;
+package com.knowgravity.raster_game.graphics.ui.state.states;
 
-import com.knowgravity.raster_game.Action.Actions;
 import com.knowgravity.raster_game.graphics.Screen;
 import com.knowgravity.raster_game.graphics.sprite.Sprites.Sprites;
-import com.knowgravity.raster_game.graphics.ui.UIState;
+import com.knowgravity.raster_game.graphics.ui.Action.GameActions;
 import com.knowgravity.raster_game.graphics.ui.element.elements.UIButton;
+import com.knowgravity.raster_game.graphics.ui.layout.UILayout;
+import com.knowgravity.raster_game.graphics.ui.layout.layouts.VerticalFlowLayout;
+import com.knowgravity.raster_game.graphics.ui.state.UIState;
 
 public class StartMenu extends UIState {
 
 	public UIButton play;
 
 	public StartMenu() {
-		play = new UIButton(100, 100, Sprites.Menus.Start.Buttons.Play.still, Actions::StartGame, this);
+		super(new VerticalFlowLayout(3, UILayout.CENTER_ALIGN));
+		play = new UIButton(100, 100, Sprites.Menus.Start.Buttons.Play.still, GameActions::StartGame, this);
 		elements.add(play);
 	}
 

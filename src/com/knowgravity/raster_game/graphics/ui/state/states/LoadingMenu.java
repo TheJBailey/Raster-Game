@@ -1,11 +1,16 @@
-package com.knowgravity.raster_game.graphics.ui.states;
+package com.knowgravity.raster_game.graphics.ui.state.states;
 
 import com.knowgravity.raster_game.graphics.Screen;
 import com.knowgravity.raster_game.graphics.sprite.Sprite;
 import com.knowgravity.raster_game.graphics.sprite.Sprites.Sprites;
-import com.knowgravity.raster_game.graphics.ui.UIState;
+import com.knowgravity.raster_game.graphics.ui.layout.layouts.VerticalFlowLayout;
+import com.knowgravity.raster_game.graphics.ui.state.UIState;
 
 public class LoadingMenu extends UIState {
+
+	public LoadingMenu() {
+		super(new VerticalFlowLayout(-1, -1));
+	}
 
 	@Override
 	public void update() {}

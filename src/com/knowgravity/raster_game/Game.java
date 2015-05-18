@@ -15,8 +15,8 @@ import javax.swing.JFrame;
 import com.knowgravity.raster_game.entity.mob.player.Player;
 import com.knowgravity.raster_game.graphics.Screen;
 import com.knowgravity.raster_game.graphics.ui.UIManager;
-import com.knowgravity.raster_game.graphics.ui.states.LoadingMenu;
-import com.knowgravity.raster_game.graphics.ui.states.StartMenu;
+import com.knowgravity.raster_game.graphics.ui.state.states.LoadingMenu;
+import com.knowgravity.raster_game.graphics.ui.state.states.StartMenu;
 import com.knowgravity.raster_game.level.Level;
 import com.knowgravity.raster_game.util.input.Input;
 import com.knowgravity.raster_game.util.maths.AspectRatio;
@@ -36,6 +36,7 @@ public class Game extends Canvas implements Runnable {
 	static Dimension size;
 
 	static Font DEFAULT_FONT = new Font("HELVETICA", Font.PLAIN, 32);
+	static boolean DEV_HUD = true;
 
 	private static BufferedImage image;
 	private static int[] pixels;
@@ -45,15 +46,12 @@ public class Game extends Canvas implements Runnable {
 	private boolean running;
 	private static int frameLimit = -1, updateRate = 60;
 
-	static boolean DEV_HUD = true;
-
-	private static Level level;
-	private static Player player;
-
-	private static Input input;
-
 	private static Loader loader;
 	private static UIManager uiManager;
+
+	private static Input input;
+	private static Level level;
+	private static Player player;
 
 	public Game() {
 		window = new JFrame(title);
@@ -85,18 +83,6 @@ public class Game extends Canvas implements Runnable {
 		if (loader != null) loader.update();
 		if (level != null) level.update();
 		if (player != null) player.update();
-	}
-
-	void setRenderingHints(Graphics2D g) {
-		g.setRenderingHint(RenderingHints.KEY_ALPHA_INTERPOLATION, RenderingHints.VALUE_ALPHA_INTERPOLATION_QUALITY);
-		g.setRenderingHint(RenderingHints.KEY_FRACTIONALMETRICS, RenderingHints.VALUE_FRACTIONALMETRICS_ON);
-		g.setRenderingHint(RenderingHints.KEY_FRACTIONALMETRICS, RenderingHints.VALUE_FRACTIONALMETRICS_ON);
-		g.setRenderingHint(RenderingHints.KEY_COLOR_RENDERING, RenderingHints.VALUE_COLOR_RENDER_QUALITY);
-		g.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
-		g.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BICUBIC);
-		g.setRenderingHint(RenderingHints.KEY_STROKE_CONTROL, RenderingHints.VALUE_STROKE_NORMALIZE);
-		g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-		g.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
 	}
 
 	public void render() {
@@ -222,6 +208,16 @@ public class Game extends Canvas implements Runnable {
 		window.pack();
 		window.setLocationRelativeTo(null);
 		window.setVisible(true);
+	}
+
+	private void setRenderingHints(Graphics2D g) {
+		// g.setRenderingHint(RenderingHints.KEY_ALPHA_INTERPOLATION, RenderingHints.VALUE_ALPHA_INTERPOLATION_QUALITY);
+		// g.setRenderingHint(RenderingHints.KEY_FRACTIONALMETRICS, RenderingHints.VALUE_FRACTIONALMETRICS_ON);
+		g.setRenderingHint(RenderingHints.KEY_COLOR_RENDERING, RenderingHints.VALUE_COLOR_RENDER_QUALITY);
+		g.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
+		// g.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BICUBIC);
+		// g.setRenderingHint(RenderingHints.KEY_STROKE_CONTROL, RenderingHints.VALUE_STROKE_NORMALIZE);
+		g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 	}
 
 	public static void main(String[] args) {

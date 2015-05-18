@@ -2,10 +2,10 @@ package com.knowgravity.raster_game.graphics.ui.element.elements;
 
 import static com.knowgravity.raster_game.Game.getInput;
 
-import com.knowgravity.raster_game.Action;
 import com.knowgravity.raster_game.graphics.sprite.Sprite;
-import com.knowgravity.raster_game.graphics.ui.UIState;
+import com.knowgravity.raster_game.graphics.ui.Action;
 import com.knowgravity.raster_game.graphics.ui.element.UIElement;
+import com.knowgravity.raster_game.graphics.ui.state.UIState;
 import com.knowgravity.raster_game.util.input.Input;
 import com.knowgravity.raster_game.util.maths.Coordinate.Bounds;
 
